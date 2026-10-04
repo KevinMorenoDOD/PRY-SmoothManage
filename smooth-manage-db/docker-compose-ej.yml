@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pg_db_smoothmanage
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: --
+      POSTGRES_PASSWORD: --
+      POSTGRES_DB: smoothmanage
+    ports:
+      - "543-:543-"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
