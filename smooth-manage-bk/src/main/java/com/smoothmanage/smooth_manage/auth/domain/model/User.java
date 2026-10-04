@@ -32,12 +32,14 @@ public class User extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private Instant updatedAt;
 
+    //constructor that is gonna be used
     public User(String email, String passwordHash, String displayName) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.displayName = displayName;
     }
 
+    //the auto assign of updatedAt
     @PrePersist
     @Override
     protected void onCreate() {
@@ -45,6 +47,7 @@ public class User extends BaseEntity {
         this.updatedAt = getCreatedAt();
     }
 
+    //the auto assign of updatedAt when got updated
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
