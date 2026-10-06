@@ -5,12 +5,12 @@ BEGIN
     --Tasks ENUMS
     --Tasks priority to complete
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tasks_priority') THEN
-    CREATE TYPE priority AS ENUM ('LOW', 'MEDIUM', 'HIGH');
+    CREATE TYPE tasks_priority AS ENUM ('LOW', 'MEDIUM', 'HIGH');
     END IF;
 
     --Tasks status info
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tasks_status') THEN
-    CREATE TYPE task_status AS ENUM ('TODO', 'IN_PROGRESS', 'DONE', 'DELETED');
+    CREATE TYPE tasks_status AS ENUM ('TODO', 'IN_PROGRESS', 'DONE');
     END IF;
 
     --Tasks node type to change his behavior

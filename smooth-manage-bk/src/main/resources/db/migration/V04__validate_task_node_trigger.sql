@@ -1,12 +1,12 @@
 CREATE OR REPLACE FUNCTION validate_task_node()
     RETURNS TRIGGER AS $$
 DECLARE
-    parent_type notes_node_type;
+    parent_type tasks_node_type;
 BEGIN
-    -- 1) Si hay parent_id: validar que existe en note_nodes, mismo user_id y no borrado
+    -- 1) Si hay parent_id: validar que existe en task_nodes, mismo user_id y no borrado
     IF NEW.parent_id IS NOT NULL THEN
         SELECT type INTO parent_type
-        FROM note_nodes
+        FROM task_nodes
         WHERE id = NEW.parent_id
           AND user_id = NEW.user_id
           AND deleted_at IS NULL;
@@ -29,9 +29,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_validate_task_node ON tasks;
+DROP TRIGGER IF EXISTS trg_validate_task_node ON task_nodes;
 
 CREATE TRIGGER trg_validate_task_node
-    BEFORE INSERT OR UPDATE ON tasks
+    BEFORE INSERT OR UPDATE ON task_nodes
     FOR EACH ROW
 EXECUTE FUNCTION validate_task_node();
