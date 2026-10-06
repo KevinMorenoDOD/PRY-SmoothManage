@@ -25,20 +25,24 @@ public class PasswordResetToken extends BaseEntity {
     @Column(name = "used_at")
     private Instant usedAt;
 
+    //constructor that is gonna be used
     public PasswordResetToken(Long userId, String tokenHash, Instant expiresAt) {
         this.userId = userId;
         this.tokenHash = tokenHash;
         this.expiresAt = expiresAt;
     }
 
+    //the expired verification
     public boolean isExpired() {
         return expiresAt.isBefore(Instant.now());
     }
 
+    //the isUsed verification
     public boolean isUsed() {
         return usedAt != null;
     }
 
+    //the change state used function
     public void markUsed() {
         this.usedAt = Instant.now();
     }

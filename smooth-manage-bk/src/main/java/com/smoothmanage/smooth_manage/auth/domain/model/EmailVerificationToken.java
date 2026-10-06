@@ -22,12 +22,14 @@ public class EmailVerificationToken extends BaseEntity {
     @Column(name = "expires_at", nullable = false)
     private Instant expiresAt;
 
+    //constructor that is gonna be used
     public EmailVerificationToken(Long userId, String tokenHash, Instant expiresAt) {
         this.userId = userId;
         this.tokenHash = tokenHash;
         this.expiresAt = expiresAt;
     }
 
+    //the expired verification
     public boolean isExpired() {
         return expiresAt.isBefore(Instant.now());
     }

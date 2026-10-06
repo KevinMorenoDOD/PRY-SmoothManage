@@ -10,7 +10,6 @@
 CREATE TABLE IF NOT EXISTS users (
         id            BIGSERIAL PRIMARY KEY,
         email         VARCHAR(255) NOT NULL UNIQUE,
-        username         VARCHAR(100) NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         display_name  VARCHAR(255) NOT NULL,
         email_verified BOOLEAN     NOT NULL DEFAULT FALSE,
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS email_verification_tokens (
         created_at TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
 
---Tocken for the pasword reset to expire chan pasword sessions
+--Token for the pasword reset to expire chan pasword sessions
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id         BIGSERIAL PRIMARY KEY,
         user_id    BIGINT       NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -46,15 +45,17 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
         created_at TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
 
+
+-- Created as nodes beacause they are gona have type of node where they change its behavior
 -- ---------------------------------------------------------------------------
 -- todo (tasks) module
 -- ---------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS tasks (
+CREATE TABLE IF NOT EXISTS task_nodes (
         id          BIGSERIAL PRIMARY KEY,
         user_id     BIGINT       NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        parent_id   BIGINT      REFERENCES note_nodes(id) ON DELETE CASCADE,
         type        tasks_node_type NOT NULL,
+        parent_id   BIGINT      REFERENCES task_nodes(id) ON DELETE CASCADE,
         title       VARCHAR(255) NOT NULL,
         description TEXT,
         priority    tasks_priority     NOT NULL DEFAULT 'MEDIUM',
@@ -72,8 +73,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 CREATE TABLE IF NOT EXISTS note_nodes (
         id         BIGSERIAL PRIMARY KEY,
         user_id    BIGINT      NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        parent_id  BIGINT      REFERENCES note_nodes(id) ON DELETE CASCADE,
         type       notes_node_type NOT NULL,
+        parent_id  BIGINT      REFERENCES note_nodes(id) ON DELETE CASCADE,
         title      VARCHAR(255) NOT NULL,
         content    TEXT,
         sort_order INT         NOT NULL DEFAULT 0,
