@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SmoothManage · Sign in</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--sf:#fff;--sf2:#e8eff0;--bd:#cbdada;--tx:#1b2828;--mu:#667676;--ac:#2a8f89;--ac2:#1f6f6a;--acs:#2a8f8920;--rd:#d65c52;--am:#b9871f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#141414;--sf:#1c1c1c;--sf2:#262626;--bd:#2d4b49;--tx:#e6e6e6;--mu:#8c8c8c;--ac:#3baba5;--ac2:#2b8883;--acs:#3baba526;--rd:#e5736b;--am:#e0b04a}}
+:root[data-theme=dark]{--bg:#141414;--sf:#1c1c1c;--sf2:#262626;--bd:#2d4b49;--tx:#e6e6e6;--mu:#8c8c8c;--ac:#3baba5;--ac2:#2b8883;--acs:#3baba526;--rd:#e5736b;--am:#e0b04a}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{height:100%}
+body{min-height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--tx);font:15px/1.5 'Work Sans',system-ui,sans-serif}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+a{color:var(--ac);font-weight:600;text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}
+.wrap{flex:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+/* ---- panel de marca (siempre oscuro) ---- */
+.brand{position:relative;overflow:hidden;color:#e6e6e6;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;
+ background:radial-gradient(900px 520px at 8% 0,#3baba538,transparent 60%),radial-gradient(700px 520px at 100% 100%,#3baba52a,transparent 60%),#0f1414}
+.brand svg.net{position:absolute;inset:0;width:100%;height:100%;opacity:.45;pointer-events:none}
+.brand>*{position:relative}
+.lg{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+.lg i{font-style:normal;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#3baba5;background:#3baba52b;border:1px solid #3baba5}
+.brand h2{font-size:clamp(28px,3.2vw,42px);line-height:1.12;letter-spacing:-.02em;max-width:520px}
+.brand h2 em{font-style:normal;color:#3baba5}
+.brand .lead{color:#9aa8a7;max-width:460px;margin-top:14px}
+.ft{display:grid;gap:14px;margin-top:28px}
+.ft div{display:flex;gap:14px;align-items:center;color:#c9d3d2}
+.ft span{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#ffffff0d;border:1px solid #3baba544;color:#3baba5;flex:none}
+.mock{width:min(100%,340px);background:#181d1dcc;border:1px solid #3baba566;border-radius:18px;padding:16px 18px;backdrop-filter:blur(6px);transform:rotate(-2deg);box-shadow:0 20px 50px #0008}
+.mock b{display:block;margin-bottom:10px}
+.mock p{display:flex;gap:10px;align-items:center;font-size:13.5px;padding:5px 0;color:#c9d3d2}
+.mock p i{width:16px;height:16px;border-radius:5px;border:1.5px solid #3baba5;flex:none}
+.mock p.d{color:#7f8b8a;text-decoration:line-through}.mock p.d i{background:#3baba5}
+.mock .tg{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#3baba5;background:#3baba526;padding:2px 10px;border-radius:10px}
+.cp{color:#6f7b7a;font-size:13px}
+/* ---- formulario ---- */
+.side{display:grid;place-items:center;padding:40px 24px}
+.card{width:100%;max-width:410px}
+.mlogo{display:none;margin-bottom:28px;color:var(--tx)}
+.mlogo i{color:var(--ac)}
+.view{animation:in .4s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1{font-size:30px;line-height:1.15;letter-spacing:-.02em}
+.sub{color:var(--mu);margin:8px 0 26px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.in{display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;background:var(--sf);border:1px solid var(--bd);border-radius:14px;color:var(--mu);transition:border-color .15s,box-shadow .15s}
+.in:focus-within{border-color:var(--ac);box-shadow:0 0 0 4px var(--acs);color:var(--ac)}
+.in.bad{border-color:var(--rd);box-shadow:0 0 0 4px #d65c5222}
+.in input{flex:1;min-width:0;border:0;background:none;outline:0;color:var(--tx)}
+.in input::placeholder{color:var(--mu);opacity:.7}
+.eye{border:0;background:none;color:var(--mu);display:flex;padding:4px;border-radius:8px}.eye:hover{color:var(--ac)}
+.err{display:block;color:var(--rd);font-size:12.5px;margin-top:5px;min-height:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:2px 0 22px;font-size:14px}
+.ck{display:flex;gap:10px;align-items:center;position:relative;cursor:pointer;font-size:14px;line-height:1.3}
+.ck input{position:absolute;opacity:0;width:18px;height:18px}
+.ck i{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--bd);background:var(--sf);flex:none;display:grid;place-items:center;transition:.15s}
+.ck input:checked+i{background:var(--ac);border-color:var(--ac)}
+.ck input:checked+i::after{content:'';width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ck input:focus-visible+i{box-shadow:0 0 0 4px var(--acs)}
+.btn{position:relative;width:100%;height:50px;border:0;border-radius:14px;display:grid;place-items:center;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--ac),var(--ac2));box-shadow:0 8px 22px -8px var(--ac);transition:transform .12s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px -8px var(--ac)}
+.btn.g{background:none;color:var(--tx);border:1px solid var(--bd);box-shadow:none}.btn.g:hover{border-color:var(--ac);color:var(--ac)}
+.btn.ld{pointer-events:none}.btn.ld span{opacity:0}
+.btn.ld::after{content:'';position:absolute;width:21px;height:21px;border:2.5px solid #fff6;border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(1turn)}}
+.alt{text-align:center;color:var(--mu);margin-top:24px;font-size:14px}
+.back{display:inline-flex;align-items:center;gap:8px;color:var(--mu);font-weight:500;margin-bottom:26px}.back:hover{color:var(--ac);text-decoration:none}
+.badge{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;margin-bottom:20px;color:var(--ac);background:var(--acs);border:1px solid var(--ac)}
+.meter{display:flex;gap:6px;margin-top:8px;align-items:center}
+.meter i{flex:1;height:5px;border-radius:3px;background:var(--sf2);transition:background .2s}
+.meter small{font-size:12px;color:var(--mu);min-width:68px;text-align:right}
+.s1 i:nth-child(-n+1){background:var(--rd)}.s2 i:nth-child(-n+2){background:var(--am)}.s3 i:nth-child(-n+3){background:var(--ac)}.s4 i:nth-child(-n+4){background:var(--ac)}
+.note{font-size:12.5px;color:var(--mu);text-align:center;margin-top:18px}
+.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.brand{display:none}.mlogo{display:flex}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="wrap">
+ <section class="brand" aria-hidden="true">
+  <svg class="net" viewBox="0 0 800 900" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#3baba5" stroke-width="1.2">
+   <path d="M620 140 700 260 560 330 620 140M560 330 430 420 520 560 560 330M430 420 300 380 330 520 430 420M520 560 640 650 700 260M300 380 180 300M330 520 220 640 330 760 520 560"/>
+   <g fill="#0f1414"><circle cx="620" cy="140" r="7"/><circle cx="700" cy="260" r="5"/><circle cx="560" cy="330" r="9"/><circle cx="430" cy="420" r="6"/><circle cx="520" cy="560" r="8"/><circle cx="300" cy="380" r="5"/><circle cx="330" cy="520" r="6"/><circle cx="640" cy="650" r="5"/><circle cx="180" cy="300" r="4"/><circle cx="220" cy="640" r="5"/><circle cx="330" cy="760" r="4"/></g>
+  </svg>
+  <div class="lg"><i>S</i>SmoothManage</div>
+  <div>
+   <h2>Everything you think and do, <em>in one place.</em></h2>
+   <p class="lead">Markdown notes, tasks with statuses, and projects that tie it all together.</p>
+   <div class="ft" id="ft"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+   <div class="mock"><b>Launch plan</b><p class="d"><i></i>Lock the MVP scope</p><p><i></i>Write the landing page copy</p><p><i></i>Test the payment flow</p><span class="tg">#work</span></div>
+   <span class="cp">© 2026 SmoothManage</span>
+  </div>
+ </section>
+ <main class="side"><div class="card">
+  <div class="lg mlogo"><i>S</i>SmoothManage</div>
+  <div id="views"></div>
+ </div></main>
+</div>
+<script>
+const P={mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+eyeoff:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="m3 3 18 18"/>',
+back:'<path d="m12 19-7-7 7-7M19 12H5"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',
+note:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+task:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/>',
+proj:'<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><path d="M8 10v4"/><path d="M12 10v2"/><path d="M16 10v6"/>'};
+const ic=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">${P[k]}</svg>`;
+const $=s=>document.querySelector(s);
+$('#ft').innerHTML=[['note','Notes with folders and links between them'],['task','Task lists with statuses and a board view'],['proj','Projects that bring notes and tasks together']].map(([k,t])=>`<div><span>${ic(k,20)}</span>${t}</div>`).join('');
+
+const fld=(id,label,type,icon,ph,auto,pw)=>`<div class="fld"><label for="${id}">${label}</label><div class="in">${ic(icon)}<input id="${id}" type="${type}" placeholder="${ph}" autocomplete="${auto}">${pw?`<button type="button" class="eye" data-eye="${id}" aria-label="Show or hide password">${ic('eye')}</button>`:''}</div><small class="err" id="e-${id}"></small></div>`;
+$('#views').innerHTML=`
+<section id="v-login" class="view"><h1>Welcome back</h1><p class="sub">Sign in to pick up your notes, tasks and projects where you left off.</p>
+ <form data-f="login" novalidate>${fld('le','Email','email','mail','you@email.com','email')}${fld('lp','Password','password','lock','Your password','current-password',1)}
+ <div class="row"><label class="ck"><input type="checkbox" checked><i></i>Remember me</label><a href="#" data-go="forgot">Forgot password?</a></div>
+ <button class="btn" type="submit"><span>Sign in</span></button></form>
+ <p class="alt">Don't have an account? <a href="#" data-go="register">Sign up</a></p></section>
+<section id="v-register" class="view" hidden><h1>Create your account</h1><p class="sub">Start organizing everything in one place. It's free.</p>
+ <form data-f="register" novalidate>${fld('rn','Name','text','user','Your name','name')}${fld('re','Email','email','mail','you@email.com','email')}
+ <div class="fld"><label for="rp">Password</label><div class="in">${ic('lock')}<input id="rp" type="password" placeholder="At least 8 characters" autocomplete="new-password"><button type="button" class="eye" data-eye="rp" aria-label="Show or hide password">${ic('eye')}</button></div>
+  <div class="meter" id="mt"><i></i><i></i><i></i><i></i><small id="ml"></small></div><small class="err" id="e-rp"></small></div>
+ ${fld('rc','Confirm password','password','lock','Repeat your password','new-password',1)}
+ <div class="fld"><label class="ck"><input type="checkbox" id="rt"><i></i><span>I agree to the <a href="#">terms</a> and the <a href="#">privacy policy</a></span></label><small class="err" id="e-rt"></small></div>
+ <button class="btn" type="submit"><span>Create account</span></button></form>
+ <p class="alt">Already have an account? <a href="#" data-go="login">Sign in</a></p></section>
+<section id="v-forgot" class="view" hidden><a href="#" class="back" data-go="login">${ic('back',16)}Back</a>
+ <div id="fform"><div class="badge">${ic('key',28)}</div><h1>Forgot your password?</h1><p class="sub">No worries. Enter your email and we'll send you a link to create a new one.</p>
+ <form data-f="forgot" novalidate>${fld('fe','Email','email','mail','you@email.com','email')}<button class="btn" type="submit" style="margin-top:6px"><span>Send reset link</span></button></form></div>
+ <div id="fsent" hidden><div class="badge">${ic('mail',28)}</div><h1>Check your email</h1><p class="sub">We sent a recovery link to <b id="sm"></b>. It can take a couple of minutes; check your spam folder too.</p>
+ <button class="btn g" id="rs" type="button">Resend link</button><p class="alt"><a href="#" data-go="login">Back to sign in</a></p></div></section>
+<section id="v-done" class="view" hidden><div class="badge">${ic('check',28)}</div><h1 id="dt"></h1><p class="sub" id="dx"></p>
+ <button class="btn g" type="button" data-go="login">Back to sign in</button><p class="note">Demo view: no server is connected yet.</p></section>`;
+
+function show(v){document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!='v-'+v);
+ document.querySelectorAll('.err').forEach(x=>x.textContent='');document.querySelectorAll('.in.bad').forEach(x=>x.classList.remove('bad'));
+ if(v=='forgot'){$('#fform').hidden=false;$('#fsent').hidden=true}
+ const i=document.querySelector('#v-'+v+' input');if(i&&v!='done')setTimeout(()=>i.focus(),60)}
+const em=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v),g=id=>$('#'+id).value.trim(),raw=id=>$('#'+id).value;
+const sc=p=>{let s=0;if(p.length>=8)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^\w\s]/.test(p)||p.length>=14)s++;return s};
+function setErr(id,m){$('#e-'+id).textContent=m;const w=$('#'+id).closest('.in');if(w)w.classList.toggle('bad',!!m)}
+function chk(list){let first=null;for(const[id,ok,m]of list){setErr(id,ok?'':m);if(!ok&&!first)first=id}
+ if(first){$('#'+first).focus();const c=$('.card');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake')}return !first}
+const VAL={
+ login:()=>chk([['le',em(g('le')),'Enter a valid email'],['lp',raw('lp').length>0,'Enter your password']]),
+ register:()=>chk([['rn',g('rn').length>=2,'Enter your name'],['re',em(g('re')),'Enter a valid email'],
+  ['rp',raw('rp').length>=8&&sc(raw('rp'))>=2,'At least 8 characters, mixing letters and numbers'],
+  ['rc',raw('rc')!==''&&raw('rc')===raw('rp'),'Passwords do not match'],['rt',$('#rt').checked,'You must accept the terms to continue']]),
+ forgot:()=>chk([['fe',em(g('fe')),'Enter a valid email']])};
+function done(t,x){$('#dt').textContent=t;$('#dx').textContent=x;show('done')}
+const DONE={
+ login:()=>done('Welcome back!','You are signed in. Taking you to your workspace in a moment.'),
+ register:()=>done('Account created!','We sent you an email to confirm your address and get started.'),
+ forgot:()=>{$('#sm').textContent=g('fe');$('#fform').hidden=true;$('#fsent').hidden=false}};
+
+document.addEventListener('submit',e=>{e.preventDefault();const f=e.target.dataset.f;if(!VAL[f]())return;
+ const b=e.target.querySelector('.btn');b.classList.add('ld');setTimeout(()=>{b.classList.remove('ld');DONE[f]()},900)});
+document.addEventListener('click',e=>{const t=e.target;let x;
+ if(x=t.closest('[data-go]')){e.preventDefault();return show(x.dataset.go)}
+ if(x=t.closest('[data-eye]')){const i=$('#'+x.dataset.eye),h=i.type=='password';i.type=h?'text':'password';x.innerHTML=ic(h?'eyeoff':'eye');return}
+ if(t.closest('#rs')){const b=$('#rs');b.textContent='Link resent ✓';b.disabled=true;setTimeout(()=>{b.textContent='Resend link';b.disabled=false},4000)}
+ if(t.closest('a[href="#"]'))e.preventDefault()});
+document.addEventListener('input',e=>{const i=e.target;if(i.id)setErr(i.id,'');
+ if(i.id=='rp'){const s=i.value?sc(i.value)||1:0;$('#mt').className='meter'+(s?' s'+s:'');$('#ml').textContent=['','Very weak','Weak','Good','Strong'][s]}});
+document.addEventListener('change',e=>{if(e.target.id=='rt')setErr('rt','')});
+</script></body></html>
