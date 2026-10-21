@@ -33,7 +33,14 @@ build/
 .vscode/
 
 ### Spring Boot ###
-src/main/resources/application.properties
+# Archivo principal con credenciales sensibles - no subir al repo
+# src/main/resources/application.properties
+
+# Configuración local para desarrollo (ignorada por defecto)
+!application-local.properties
+application-local.properties
+
+### Application config per profile (opcionales)
 src/main/resources/application-*.properties
 src/main/resources/application-*.yml
 src/main/resources/application-*.yaml
