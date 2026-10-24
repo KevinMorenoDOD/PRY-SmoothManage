@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@shared": fileURLToPath(new URL("./src/modules/shared", import.meta.url)),
+      "@shared": fileURLToPath(new URL("./src/shared", import.meta.url)),
       "@auth": fileURLToPath(new URL("./src/modules/auth", import.meta.url)),
       "@tasks": fileURLToPath(new URL("./src/modules/tasks", import.meta.url)),
       "@notes": fileURLToPath(new URL("./src/modules/notes", import.meta.url)),

@@ -33,7 +33,7 @@ public class Tasks extends BaseEntity {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Enumerated(EnumType.STRING)

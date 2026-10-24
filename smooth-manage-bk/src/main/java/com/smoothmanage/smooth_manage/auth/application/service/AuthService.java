@@ -9,6 +9,7 @@ import com.smoothmanage.smooth_manage.auth.application.dto.ResetPasswordRequest;
 import com.smoothmanage.smooth_manage.auth.application.dto.UserResponse;
 import com.smoothmanage.smooth_manage.auth.application.dto.VerifyEmailRequest;
 import com.smoothmanage.smooth_manage.auth.application.port.in.AuthUseCase;
+import com.smoothmanage.smooth_manage.auth.application.port.out.EmailService;
 import com.smoothmanage.smooth_manage.auth.application.port.out.EmailVerificationTokenRepository;
 import com.smoothmanage.smooth_manage.auth.application.port.out.PasswordResetTokenRepository;
 import com.smoothmanage.smooth_manage.auth.application.port.out.RefreshTokenRepository;
@@ -39,6 +40,7 @@ public class AuthService implements AuthUseCase {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final TokenService tokenService;
+    private final EmailService emailService;
 
     public AuthService(UserRepository userRepository,
                        RefreshTokenRepository refreshTokenRepository,
@@ -46,7 +48,8 @@ public class AuthService implements AuthUseCase {
                        PasswordResetTokenRepository passwordResetTokenRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
-                       TokenService tokenService) {
+                       TokenService tokenService,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
@@ -54,6 +57,7 @@ public class AuthService implements AuthUseCase {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenService = tokenService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -67,7 +71,8 @@ public class AuthService implements AuthUseCase {
         User user = new User(email, passwordEncoder.encode(request.password()), request.displayName());
         userRepository.save(user);
 
-        createEmailVerificationToken(user);
+        String rawToken = createEmailVerificationToken(user);
+        emailService.sendEmailVerification(email, rawToken);
         return issueTokens(user);
     }
 
@@ -144,6 +149,7 @@ public class AuthService implements AuthUseCase {
                 Instant.now().plus(PASSWORD_RESET_TTL_HOURS, ChronoUnit.HOURS)
         );
         passwordResetTokenRepository.save(resetToken);
+        emailService.sendPasswordReset(user.getEmail(), rawToken);
     }
 
     @Transactional
@@ -183,7 +189,7 @@ public class AuthService implements AuthUseCase {
         return UserResponse.from(user);
     }
 
-    private void createEmailVerificationToken(User user) {
+    private String createEmailVerificationToken(User user) {
         String rawToken = tokenService.generateOpaqueToken();
         EmailVerificationToken verificationToken = new EmailVerificationToken(
                 user.getId(),
@@ -191,6 +197,7 @@ public class AuthService implements AuthUseCase {
                 Instant.now().plus(EMAIL_VERIFICATION_TTL_HOURS, ChronoUnit.HOURS)
         );
         emailVerificationTokenRepository.save(verificationToken);
+        return rawToken;
     }
 
     private AuthResponse issueTokens(User user) {

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--sf:#fff;--sf2:#e8eff0;--bd:#cbdada;--tx:#1b2828;--mu:#667676;--ac:#2a8f89;--acs:#2a8f8920;--rd:#d65c52;--am:#b9871f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#141414;--sf:#1c1c1c;--sf2:#262626;--bd:#2d4b49;--tx:#e6e6e6;--mu:#8c8c8c;--ac:#3baba5;--acs:#3baba526;--rd:#e5736b;--am:#e0b04a}}
+:root[data-theme=dark]{--bg:#141414;--sf:#1c1c1c;--sf2:#262626;--bd:#2d4b49;--tx:#e6e6e6;--mu:#8c8c8c;--ac:#3baba5;--acs:#3baba526;--rd:#e5736b;--am:#e0b04a}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font:14px/1.5 'Work Sans',system-ui,sans-serif;overflow:hidden}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}
+#app{display:flex;gap:10px;padding:10px;height:100%}
+.box{background:var(--sf);border:1px solid var(--bd);border-radius:18px}
+.sp{flex:1}
+nav{width:52px;transition:width .2s;padding:10px 8px;display:flex;flex-direction:column;gap:6px;overflow:hidden;flex:none}
+nav.open{width:180px}
+nav button{display:flex;align-items:center;gap:12px;height:38px;padding:0 9px;border:0;border-radius:12px;background:none;color:var(--ac);font-weight:600;white-space:nowrap}
+nav button.on{background:var(--acs);color:var(--tx);box-shadow:inset 0 0 0 1px var(--ac)}
+.av{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;font:700 11px/30px 'Work Sans';text-align:center;margin-left:3px;flex:none}
+aside.l{width:250px;flex:none;padding:14px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+aside h4{font-size:12px;color:var(--mu);font-weight:600;margin:10px 8px 4px;display:flex;align-items:center}
+.r{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--mu)}
+.r:hover{background:var(--sf2)}.r em{margin-left:auto;font-style:normal;font-size:12px}
+.r.on{background:var(--acs);box-shadow:inset 0 0 0 1px var(--ac);color:var(--tx);font-weight:600}
+.ib{border:0;background:none;color:var(--mu);display:flex;padding:3px;border-radius:8px;margin-left:auto}.ib:hover{color:var(--ac);background:var(--sf2)}
+main{flex:1;min-width:0;padding:20px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.top{display:flex;align-items:center;gap:12px}
+h1{font-size:26px;outline:0;border-radius:6px;min-width:40px}
+.seg{display:flex;padding:3px;border:1px solid var(--bd);border-radius:16px}
+.seg button{border:0;background:none;padding:3px 12px;border-radius:13px;font-size:12px;font-weight:600;color:var(--mu);display:flex;gap:6px;align-items:center}
+.seg button.on{background:var(--acs);color:var(--ac)}
+.add{display:flex;gap:10px;align-items:center;border:1px dashed var(--ac);border-radius:14px;padding:0 14px;height:42px;color:var(--ac)}
+.add input{flex:1;border:0;background:none;outline:0}.add input::placeholder{color:var(--mu)}
+#body{flex:1;overflow:auto;min-height:0}
+.gh{display:flex;align-items:center;gap:8px;padding:10px 4px 6px;font-weight:600;cursor:pointer;color:var(--tx)}
+.gh em{font-style:normal;color:var(--mu);font-weight:400;font-size:12px}
+.gh .ch{display:flex;transition:transform .15s;color:var(--mu)}.gh .ch.o{transform:rotate(90deg)}
+.tr{display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;cursor:pointer;background:var(--sf)}
+.tr:hover{border-color:var(--ac)}.tr.on{border-color:var(--ac);background:var(--acs)}
+.sb{border:0;background:none;display:flex;padding:0}
+.tt{flex:1}.tt.dn{text-decoration:line-through;color:var(--mu)}
+.lc{font-size:12px;color:var(--mu);background:var(--sf2);padding:1px 9px;border-radius:10px}
+.pr{font-size:12px;font-weight:600}.dt{font-size:12px;color:var(--mu);min-width:44px;text-align:right}
+.bd{display:flex;gap:12px;height:100%}
+.cl{flex:1;min-width:190px;background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.cl.ov{border-color:var(--ac);background:var(--acs)}
+.cl h5{display:flex;gap:8px;align-items:center;font-size:13px}.cl h5 em{font-style:normal;color:var(--mu);font-weight:400}
+.cd{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;cursor:grab;display:flex;flex-direction:column;gap:6px}
+.cd:hover,.cd.on{border-color:var(--ac)}
+.dp{width:290px;flex:none;padding:18px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.dp label{font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:4px}
+.dp input,.dp select,.dp textarea{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:7px 10px;outline:0}
+.dp input:focus,.dp select:focus,.dp textarea:focus{border-color:var(--ac)}
+.dp textarea{min-height:90px;resize:vertical}
+.sts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sts button{display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--bd);border-radius:10px;background:none;font-size:12px}
+.sts button.on{border-color:var(--ac);background:var(--acs);font-weight:600}
+.btn{display:flex;gap:8px;align-items:center;justify-content:center;border:1px solid var(--ac);background:var(--acs);color:var(--ac);font-weight:600;border-radius:14px;padding:8px 14px;white-space:nowrap}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}.btn.p:hover{filter:brightness(1.08)}
+.btn.g{border-color:var(--bd);background:none;color:var(--mu)}.btn.g:hover{border-color:var(--ac);color:var(--ac)}
+.btn.d:hover{border-color:var(--rd);color:var(--rd)}
+.dp h3{font-size:17px}.hd2{display:flex;align-items:flex-start;gap:8px}.vt{flex:1;line-height:1.3;word-break:break-word}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:13px;align-items:center}.dl dt{color:var(--mu)}.sv{display:flex;gap:8px;align-items:center}
+.vx small{color:var(--mu);font-size:12px}.vx p{margin-top:4px;white-space:pre-wrap;word-break:break-word}
+.acts{display:flex;gap:8px;margin-top:auto;padding-top:6px}.acts .btn{flex:1}
+.dp input.bad{border-color:var(--rd)}
+.em{color:var(--mu);text-align:center;padding:30px}
+.rm{display:none;flex:none;align-items:center;color:var(--mu);padding:2px;border:0;background:none;border-radius:6px;margin-left:6px}
+.r:hover .rm,.tr:hover .rm,.cd:hover .rm{display:flex}.rm:hover{color:var(--rd);background:var(--sf2)}
+@media(hover:none){.r .rm,.tr .rm,.cd .rm{display:flex}}
+#dlb{padding:5px 12px;border:1px solid var(--bd);border-radius:14px;font-size:12px;font-weight:600;gap:6px;margin:0 4px}#dlb:hover{border-color:var(--rd)}
+#ts{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--sf);border:1px solid var(--ac);border-radius:14px;padding:8px 16px;display:flex;gap:16px;align-items:center;z-index:9;box-shadow:0 6px 24px #0005}#ts[hidden]{display:none}#ts button{border:0;background:none;color:var(--ac);font-weight:700}
+@media(max-width:900px){aside.l{display:none}.dp{position:fixed;right:10px;top:10px;bottom:10px;z-index:5}}
+</style></head><body>
+<div id="app"><nav id="nv" class="box"></nav><aside class="l box" id="sd"></aside>
+<main class="box"><div class="top"><h1 id="ttl"></h1><span class="sp"></span><button class="rm" id="dlb" title="Delete list" style="display:none"></button><div class="seg"><button data-v="lista"></button><button data-v="tab"></button></div><button class="btn p" id="nw"></button></div>
+<label class="add"><span id="pi"></span><input id="nt" placeholder="New task, then press Enter"></label>
+<div id="body"></div></main>
+<aside class="dp box" id="dp" hidden></aside></div>
+<div id="ts" hidden><span></span><button id="ud">Undo</button></div>
+<script>
+const P={proj:'<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><path d="M8 10v4"/><path d="M12 10v2"/><path d="M16 10v6"/>',
+note:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+task:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',plus:'<path d="M5 12h14M12 5v14"/>',chev:'<path d="m9 18 6-6-6-6"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',tab:'<rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="12" x="14" y="3" rx="1"/>',
+all:'<path d="M3 6h18M3 12h18M3 18h18"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ls:'<path d="M3 6h.01M3 12h.01M3 18h.01M8 6h13M8 12h13M8 18h13"/>',trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',pencil:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>'};
+const ic=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">${P[k]}</svg>`;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+$('#nv').innerHTML=`<button id="tg">${ic('menu')}<span>Menu</span></button>`+[['proj','Projects'],['note','Notes'],['task','Tasks']].map(([k,l])=>`<button class="${k=='task'?'on':''}">${ic(k)}<span>${l}</span></button>`).join('')+'<div class="sp"></div><div class="av">YOU</div>';
+$('#pi').innerHTML=ic('plus');
+$('#nw').innerHTML=ic('plus',16)+'New task';
+$('#dlb').innerHTML=ic('trash',16)+'<span>Delete list</span>';
+document.querySelector('[data-v=lista]').innerHTML=ic('list',14)+'List';
+document.querySelector('[data-v=tab]').innerHTML=ic('tab',14)+'Board';
+
+const ST=[['pend','Pending'],['prog','In progress'],['blk','Blocked'],['done','Done']];
+const si=(s,z=20)=>`<svg width="${z}" height="${z}" viewBox="0 0 24 24" style="flex:none">`+({
+ pend:'<circle cx="12" cy="12" r="8.5" fill="none" stroke="var(--mu)" stroke-width="2"/>',
+ prog:'<circle cx="12" cy="12" r="8.5" fill="none" stroke="var(--am)" stroke-width="2"/><path d="M12 6.5a5.5 5.5 0 0 1 0 11z" fill="var(--am)"/>',
+ blk:'<circle cx="12" cy="12" r="8.5" fill="none" stroke="var(--rd)" stroke-width="2"/><path d="M8.5 12h7" stroke="var(--rd)" stroke-width="2" stroke-linecap="round"/>',
+ done:'<circle cx="12" cy="12" r="9.5" fill="var(--ac)"/><path d="m8 12.5 3 3 5-6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'}[s])+'</svg>';
+const PN=['Low','Medium','High'],PC=['var(--mu)','var(--am)','var(--rd)'],MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fd=d=>d?MS[+d.slice(5,7)-1]+' '+(+d.slice(8)):'';
+const TD='2026-10-06';
+let L=[{id:'a',n:'Launch v1.0'},{id:'b',n:'Sprint 12'},{id:'c',n:'Personal'}];
+let T=[
+ {id:1,t:'Write the landing page copy',s:'prog',l:'a',p:2,d:'2026-10-08',x:'Use the tone from the brief.'},
+ {id:2,t:'Test the payment flow',s:'pend',l:'a',p:1,d:'2026-10-10',x:''},
+ {id:3,t:'Prepare the press release',s:'pend',l:'a',p:0,d:'2026-10-14',x:''},
+ {id:4,t:'Lock the MVP scope',s:'done',l:'a',p:2,d:'2026-10-01',x:''},
+ {id:5,t:'Calendar integration',s:'blk',l:'b',p:1,d:'2026-10-12',x:'API access is missing.'},
+ {id:6,t:'Review open PRs',s:'prog',l:'b',p:1,d:TD,x:''},
+ {id:7,t:'Update dependencies',s:'pend',l:'b',p:0,d:'',x:''},
+ {id:8,t:'Pay the internet bill',s:'pend',l:'c',p:1,d:TD,x:''},
+ {id:9,t:'Book a doctor appointment',s:'done',l:'c',p:0,d:'2026-10-03',x:''}];
+let sel='all',view='lista',cur=null,gc=new Set(),nid=10,mode='view',dr=null;
+const ln=id=>(L.find(l=>l.id==id)||{}).n||'';
+const vis=()=>T.filter(t=>sel=='all'||(sel=='today'?t.d==TD:t.l==sel));
+const open=a=>a.filter(t=>t.s!='done').length;
+
+function side(){
+ const row=(id,i,n,c,del)=>`<div class="r ${sel==id?'on':''}" data-sel="${id}">${ic(i,16)}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(n)}</span><em>${c}</em>${del?`<button class="rm" data-dl="${id}" title="Delete list">${ic('trash',15)}</button>`:''}</div>`;
+ $('#sd').innerHTML='<h4>Views</h4>'+row('all','all','All',open(T))+row('today','sun','Today',open(T.filter(t=>t.d==TD)))
+  +`<h4>Lists<button class="ib" id="nl" title="New list">${ic('plus',16)}</button></h4>`+L.map(l=>row(l.id,'ls',l.n,open(T.filter(t=>t.l==l.id)),true)).join('')}
+function row(t){return `<div class="tr ${t.id==cur?'on':''}" data-t="${t.id}"><button class="sb" data-c="${t.id}" title="Change status">${si(t.s)}</button><span class="tt ${t.s=='done'?'dn':''}">${esc(t.t)}</span>${sel=='all'||sel=='today'?`<span class="lc">${esc(ln(t.l))}</span>`:''}<span class="pr" style="color:${PC[t.p]}">${PN[t.p]}</span><span class="dt">${fd(t.d)}</span><button class="rm" data-dt="${t.id}" title="Delete task">${ic('trash',15)}</button></div>`}
+function main(){
+ const s=L.find(l=>l.id==sel);const h=$('#ttl');
+ h.textContent=s?s.n:(sel=='today'?'Today':'All tasks');h.contentEditable=!!s;$('#dlb').style.display=s?'flex':'none';
+ document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v==view));
+ const v=vis();let h2='';
+ if(!v.length)h2='<div class="em">No tasks here. Type above to create the first one.</div>';
+ else if(view=='lista')h2=ST.map(([k,n])=>{const a=v.filter(t=>t.s==k);if(!a.length)return'';return `<section><div class="gh" data-g="${k}"><span class="ch ${gc.has(k)?'':'o'}">${ic('chev',14)}</span>${si(k,16)}${n}<em>${a.length}</em></div>${gc.has(k)?'':a.map(row).join('')}</section>`}).join('');
+ else h2='<div class="bd">'+ST.map(([k,n])=>{const a=v.filter(t=>t.s==k);return `<div class="cl" data-col="${k}"><h5>${si(k,16)}${n}<em>${a.length}</em></h5>${a.map(t=>`<div class="cd ${t.id==cur?'on':''}" draggable="true" data-t="${t.id}"><span class="${t.s=='done'?'dn':''}">${esc(t.t)}</span><span style="display:flex;gap:8px;font-size:12px"><b style="color:${PC[t.p]}">${PN[t.p]}</b><span style="color:var(--mu)">${fd(t.d)}</span><button class="rm" style="margin-left:auto" data-dt="${t.id}" title="Delete task">${ic('trash',15)}</button></span></div>`).join('')}</div>`}).join('')+'</div>';
+ $('#body').innerHTML=h2}
+const SL=Object.fromEntries(ST);
+const fdf=d=>d?fd(d)+', '+d.slice(0,4):'No date';
+function form(t,title,ok){
+ return `<h3>${title}</h3>
+ <label>Title<input data-f="t" value="${esc(t.t)}" placeholder="What needs to be done?"></label>
+ <label>Status<div class="sts">${ST.map(([k,n])=>`<button type="button" data-s="${k}" class="${t.s==k?'on':''}">${si(k,16)}${n}</button>`).join('')}</div></label>
+ <label>Priority<select data-f="p">${PN.map((n,i)=>`<option value="${i}" ${t.p==i?'selected':''}>${n}</option>`).join('')}</select></label>
+ <label>Due date<input type="date" data-f="d" value="${t.d}"></label>
+ <label>List<select data-f="l">${L.map(l=>`<option value="${l.id}" ${t.l==l.id?'selected':''}>${esc(l.n)}</option>`).join('')}</select></label>
+ <label>Description (markdown)<textarea data-f="x">${esc(t.x)}</textarea></label>
+ <div class="acts"><button type="button" class="btn g" data-cancel>Cancel</button><button type="button" class="btn p" data-save>${ok}</button></div>`}
+function det(){const d=$('#dp');
+ if(dr){d.hidden=false;d.innerHTML=form(dr,mode=='new'?'New task':'Edit task',mode=='new'?'Create task':'Save changes');return}
+ const t=T.find(x=>x.id==cur);d.hidden=!t;if(!t)return;
+ d.innerHTML=`<div class="hd2"><h3 class="vt">${esc(t.t)}</h3><button class="ib" data-close title="Close">${ic('x',16)}</button></div>
+ <dl class="dl"><dt>Status</dt><dd class="sv">${si(t.s,16)}${SL[t.s]}</dd><dt>Priority</dt><dd style="color:${PC[t.p]};font-weight:600">${PN[t.p]}</dd><dt>Due date</dt><dd>${fdf(t.d)}</dd><dt>List</dt><dd>${esc(ln(t.l))}</dd></dl>
+ <div class="vx"><small>Description</small><p>${t.x?esc(t.x):'<span style="color:var(--mu)">No description</span>'}</p></div>
+ <div class="acts"><button class="btn g d" data-del>Delete</button><button class="btn p" data-edit>${ic('pencil',15)}Edit</button></div>`}
+const defList=()=>L.some(l=>l.id==sel)?sel:L[0].id;
+function saveEd(){const ti=dr.t.trim();
+ if(!ti){const i=$('#dp [data-f=t]');i.classList.add('bad');i.focus();return}
+ dr.t=ti;
+ if(mode=='new'){const t={...dr,id:nid++};T.push(t);cur=t.id;if(!vis().some(x=>x.id==t.id))sel=t.l}
+ else Object.assign(T.find(x=>x.id==dr.id),dr);
+ mode='view';dr=null;draw()}
+function cancelEd(){mode='view';dr=null;draw()}
+const draw=()=>{if(mode=='edit'&&dr&&!T.some(x=>x.id==dr.id)){dr=null;mode='view'}side();main();det()};
+let undo=null,tt;
+function toast(msg,fn){clearTimeout(tt);undo=fn;const e=$('#ts');e.hidden=false;e.querySelector('span').textContent=msg;tt=setTimeout(()=>{e.hidden=true;undo=null},7000)}
+function delTask(id){const i=T.findIndex(x=>x.id==id);if(i<0)return;const t=T.splice(i,1)[0];if(cur==id)cur=null;draw();
+ toast('Task deleted',()=>{T.splice(Math.min(i,T.length),0,t);draw()})}
+function delList(id){const li=L.findIndex(l=>l.id==id);if(li<0)return;const l=L[li],ts=T.filter(t=>t.l==id),was=sel;
+ L.splice(li,1);T=T.filter(t=>t.l!=id);if(sel==id)sel='all';if(ts.some(t=>t.id==cur))cur=null;draw();
+ toast('List “'+l.n+'” deleted'+(ts.length?' with '+ts.length+(ts.length==1?' task':' tasks'):''),()=>{L.splice(Math.min(li,L.length),0,l);T=T.concat(ts);sel=was;draw()})}
+const nxt=s=>ST[(ST.findIndex(x=>x[0]==s)+1)%4][0];
+
+document.addEventListener('click',e=>{const t=e.target;let x;
+ if(x=t.closest('[data-c]')){const k=T.find(i=>i.id==x.dataset.c);k.s=nxt(k.s);if(dr&&dr.id==k.id)dr.s=k.s;return draw()}
+ if(x=t.closest('[data-dt]'))return delTask(+x.dataset.dt);
+ if(x=t.closest('[data-dl]'))return delList(x.dataset.dl);
+ if(t.closest('#dlb'))return delList(sel);
+ if(t.closest('#ud')){if(undo)undo();undo=null;$('#ts').hidden=true;return}
+ if(x=t.closest('[data-t]')){cur=+x.dataset.t;mode='view';dr=null;return draw()}
+ if(x=t.closest('[data-sel]')){sel=x.dataset.sel;return draw()}
+ if(x=t.closest('[data-g]')){const g=x.dataset.g;gc.has(g)?gc.delete(g):gc.add(g);return main()}
+ if(x=t.closest('[data-v]')){view=x.dataset.v;return main()}
+ if(x=t.closest('[data-s]')){if(dr){dr.s=x.dataset.s;det()}return}
+ if(t.closest('[data-del]'))return delTask(cur);
+ if(t.closest('#nl')){const id='l'+Date.now();L.push({id,n:'New list '+L.length});sel=id;return draw()}
+ if(t.closest('[data-edit]')){const k=T.find(i=>i.id==cur);dr={...k};mode='edit';return det()}
+ if(t.closest('[data-cancel]'))return cancelEd();
+ if(t.closest('[data-save]'))return saveEd();
+ if(t.closest('[data-close]')){cur=null;return draw()}
+ if(t.closest('#nw')){dr={t:'',s:'pend',l:defList(),p:1,d:sel=='today'?TD:'',x:''};mode='new';cur=null;draw();setTimeout(()=>{const i=$('#dp [data-f=t]');if(i)i.focus()},0);return}
+ if(t.closest('#tg'))$('#nv').classList.toggle('open')});
+document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f||!dr)return;dr[f]=f=='p'?+e.target.value:e.target.value;e.target.classList.remove('bad')});
+document.addEventListener('keydown',e=>{if(!dr)return;const inDp=e.target.closest&&e.target.closest('#dp');if(e.key=='Escape'&&inDp)cancelEd();if(e.key=='Enter'&&e.target.dataset&&e.target.dataset.f=='t'){e.preventDefault();saveEd()}});
+$('#ttl').addEventListener('blur',e=>{const l=L.find(i=>i.id==sel);if(l){l.n=e.target.textContent.trim()||l.n;side()}});
+$('#ttl').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();e.target.blur()}});
+$('#nt').addEventListener('keydown',e=>{if(e.key!='Enter'||!e.target.value.trim())return;
+ if(!L.length)L.push({id:'l'+Date.now(),n:'My list'});T.push({id:nid++,t:e.target.value.trim(),s:'pend',l:L.some(l=>l.id==sel)?sel:L[0].id,p:1,d:sel=='today'?TD:'',x:''});e.target.value='';draw()});
+document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.cd');if(c)e.dataTransfer.setData('text/plain',c.dataset.t)});
+document.addEventListener('dragover',e=>{const c=e.target.closest&&e.target.closest('.cl');if(c){e.preventDefault();document.querySelectorAll('.cl').forEach(k=>k.classList.toggle('ov',k==c))}});
+document.addEventListener('drop',e=>{const c=e.target.closest&&e.target.closest('.cl');if(!c)return;e.preventDefault();
+ const t=T.find(i=>i.id==e.dataTransfer.getData('text/plain'));if(t){t.s=c.dataset.col;draw()}});
+document.addEventListener('dragend',()=>document.querySelectorAll('.cl').forEach(k=>k.classList.remove('ov')));
+draw();
+</script></body></html>

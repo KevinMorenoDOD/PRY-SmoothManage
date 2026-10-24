@@ -1,0 +1,685 @@
+.tasks-app {
+  --sf: var(--surface);
+  --sf2: var(--surface-2);
+  --bd: var(--border);
+  --tx: var(--text);
+  --mu: var(--text-muted);
+  --ac: var(--accent);
+  --acs: var(--accent-soft);
+  --rd: var(--danger);
+  --am: var(--warning);
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: transparent;
+  color: var(--tx);
+  font: 14px/1.5 'Work Sans', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.tasks-app *,
+.tasks-app *::before,
+.tasks-app *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.tasks-app button,
+.tasks-app input,
+.tasks-app textarea,
+.tasks-app select {
+  font: inherit;
+  color: inherit;
+}
+
+.tasks-app button {
+  cursor: pointer;
+}
+
+.tasks-app .box {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+}
+
+.tasks-app .sp {
+  flex: 1;
+}
+
+.tasks-app nav {
+  width: 52px;
+  transition: width 0.2s;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+  flex: none;
+}
+
+.tasks-app nav.open {
+  width: 180px;
+}
+
+.tasks-app nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--ac);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tasks-app nav button.on {
+  background: var(--acs);
+  color: var(--tx);
+  box-shadow: inset 0 0 0 1px var(--ac);
+}
+
+.tasks-app .av {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ac);
+  color: #fff;
+  font: 700 11px/30px 'Work Sans', system-ui, sans-serif;
+  text-align: center;
+  margin-left: 3px;
+  border: 0;
+  padding: 0;
+  flex: none;
+}
+
+.tasks-app aside.l {
+  width: 250px;
+  flex: none;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.tasks-app aside h4 {
+  font-size: 12px;
+  color: var(--mu);
+  font-weight: 600;
+  margin: 10px 8px 4px;
+  display: flex;
+  align-items: center;
+}
+
+.tasks-app .r {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--mu);
+}
+
+.tasks-app .r:hover {
+  background: var(--sf2);
+}
+
+.tasks-app .r em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 12px;
+}
+
+.tasks-app .r.on {
+  background: var(--acs);
+  box-shadow: inset 0 0 0 1px var(--ac);
+  color: var(--tx);
+  font-weight: 600;
+}
+
+.tasks-app .ib {
+  border: 0;
+  background: none;
+  color: var(--mu);
+  display: flex;
+  padding: 3px;
+  border-radius: 8px;
+  margin-left: auto;
+}
+
+.tasks-app .ib:hover {
+  color: var(--ac);
+  background: var(--sf2);
+}
+
+.tasks-app .r .rm {
+  display: none;
+  flex: none;
+  align-items: center;
+  color: var(--mu);
+  padding: 2px;
+  border: 0;
+  background: none;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.tasks-app .r:hover .rm {
+  display: flex;
+}
+
+.tasks-app .rm:hover {
+  color: var(--rd);
+  background: var(--sf2);
+}
+
+@media (hover: none) {
+  .tasks-app .r .rm,
+  .tasks-app .tr .rm,
+  .tasks-app .cd .rm {
+    display: flex;
+  }
+}
+
+.tasks-app #dlb {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid var(--bd);
+  background: none;
+  color: var(--mu);
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+  margin: 0 4px;
+}
+
+.tasks-app #dlb:hover {
+  border-color: var(--rd);
+}
+
+.tasks-app main {
+  flex: 1;
+  min-width: 0;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.tasks-app .top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tasks-app h1 {
+  font-size: 26px;
+  outline: 0;
+  border-radius: 6px;
+  min-width: 40px;
+}
+
+.tasks-app .seg {
+  display: flex;
+  padding: 3px;
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+}
+
+.tasks-app .seg button {
+  border: 0;
+  background: none;
+  padding: 3px 12px;
+  border-radius: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mu);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tasks-app .seg button.on {
+  background: var(--acs);
+  color: var(--ac);
+}
+
+.tasks-app .add {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border: 1px dashed var(--ac);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 42px;
+  color: var(--ac);
+}
+
+.tasks-app .add input {
+  flex: 1;
+  border: 0;
+  background: none;
+  outline: 0;
+}
+
+.tasks-app .add input::placeholder {
+  color: var(--mu);
+}
+
+.tasks-app #body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.tasks-app .gh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px 6px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--tx);
+}
+
+.tasks-app .gh em {
+  font-style: normal;
+  color: var(--mu);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.tasks-app .gh .ch {
+  display: flex;
+  transition: transform 0.15s;
+  color: var(--mu);
+}
+
+.tasks-app .gh .ch.o {
+  transform: rotate(90deg);
+}
+
+.tasks-app .tr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: var(--sf);
+}
+
+.tasks-app .tr:hover {
+  border-color: var(--ac);
+}
+
+.tasks-app .tr.on {
+  border-color: var(--ac);
+  background: var(--acs);
+}
+
+.tasks-app .sb {
+  border: 0;
+  background: none;
+  display: flex;
+}
+
+.tasks-app .tt {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tasks-app .tt.dn {
+  text-decoration: line-through;
+  color: var(--mu);
+}
+
+.tasks-app .lc {
+  font-size: 12px;
+  color: var(--mu);
+  background: var(--sf2);
+  padding: 1px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.tasks-app .pr {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 48px;
+}
+
+.tasks-app .dt {
+  font-size: 12px;
+  color: var(--mu);
+  min-width: 44px;
+  text-align: right;
+}
+
+.tasks-app .bd {
+  display: flex;
+  gap: 12px;
+  height: 100%;
+}
+
+.tasks-app .cl {
+  flex: 1;
+  min-width: 190px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 10px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tasks-app .cl.ov {
+  border-color: var(--ac);
+  background: var(--acs);
+}
+
+.tasks-app .cl h5 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.tasks-app .cl h5 em {
+  font-style: normal;
+  color: var(--mu);
+  font-weight: 400;
+}
+
+.tasks-app .cd {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tasks-app .cd:hover,
+.tasks-app .cd.on {
+  border-color: var(--ac);
+}
+
+.tasks-app .cd.drag {
+  opacity: 0.4;
+}
+
+.tasks-app .dp[hidden] {
+  display: none;
+}
+
+.tasks-app .dp {
+  width: 290px;
+  flex: none;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+}
+
+.tasks-app .dp label {
+  font-size: 12px;
+  color: var(--mu);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tasks-app .dp input,
+.tasks-app .dp select,
+.tasks-app .dp textarea {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 7px 10px;
+  outline: 0;
+}
+
+.tasks-app .dp input:focus,
+.tasks-app .dp select:focus,
+.tasks-app .dp textarea:focus {
+  border-color: var(--ac);
+}
+
+.tasks-app .dp textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.tasks-app .sts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.tasks-app .sts button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  background: none;
+  font-size: 12px;
+}
+
+.tasks-app .sts button.on {
+  border-color: var(--ac);
+  background: var(--acs);
+  font-weight: 600;
+}
+
+.tasks-app .btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ac);
+  background: var(--acs);
+  color: var(--ac);
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.tasks-app .btn.p {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+}
+
+.tasks-app .btn.p:hover {
+  filter: brightness(1.08);
+}
+
+.tasks-app .btn.g {
+  border-color: var(--bd);
+  background: none;
+  color: var(--mu);
+}
+
+.tasks-app .btn.g:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+}
+
+.tasks-app .btn.d:hover {
+  border-color: var(--rd);
+  color: var(--rd);
+}
+
+.tasks-app .dp h3 {
+  font-size: 17px;
+}
+
+.tasks-app .hd2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tasks-app .vt {
+  flex: 1;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.tasks-app .dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 16px;
+  font-size: 13px;
+  align-items: center;
+}
+
+.tasks-app .dl dt {
+  color: var(--mu);
+}
+
+.tasks-app .sv {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tasks-app .vx small {
+  color: var(--mu);
+  font-size: 12px;
+}
+
+.tasks-app .vx > p {
+  margin-top: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tasks-app .vx .md-view {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.tasks-app .acts {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.tasks-app .acts .btn {
+  flex: 1;
+}
+
+.tasks-app .dp input.bad {
+  border-color: var(--rd);
+}
+
+.tasks-app .em {
+  color: var(--mu);
+  text-align: center;
+  padding: 30px;
+}
+
+.tasks-app .rm {
+  display: none;
+  flex: none;
+  align-items: center;
+  color: var(--mu);
+  padding: 2px;
+  border: 0;
+  background: none;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.tasks-app #ts {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--sf);
+  border: 1px solid var(--ac);
+  border-radius: 14px;
+  padding: 8px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  z-index: 9;
+  box-shadow: 0 6px 24px #0005;
+}
+
+.tasks-app #ts[hidden] {
+  display: none;
+}
+
+.tasks-app #ts button {
+  border: 0;
+  background: none;
+  color: var(--ac);
+  font-weight: 700;
+}
+
+.tasks-app #rz {
+  width: 6px;
+  margin: 0 -8px;
+  flex: none;
+  cursor: col-resize;
+  position: relative;
+  z-index: 2;
+  touch-action: none;
+  border-radius: 3px;
+}
+
+.tasks-app #rz::before {
+  content: '';
+  position: absolute;
+  inset: 0 -4px;
+}
+
+.tasks-app #rz:hover,
+.tasks-app #rz.on {
+  background: var(--ac);
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) {
+  .tasks-app aside.l {
+    display: none;
+  }
+
+  .tasks-app .dp {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    z-index: 5;
+  }
+}

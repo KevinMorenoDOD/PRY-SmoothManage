@@ -22,7 +22,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["src/modules/shared/*"],
+      "@shared/*": ["src/shared/*"],
       "@auth/*": ["src/modules/auth/*"],
       "@tasks/*": ["src/modules/tasks/*"],
       "@notes/*": ["src/modules/notes/*"]

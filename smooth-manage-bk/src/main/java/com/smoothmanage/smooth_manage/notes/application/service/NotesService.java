@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -67,7 +69,7 @@ public class NotesService implements NotesUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with id: " + request.id()));
 
         if (request.parentId() != null) {
-            note.setParentId(request.parentId());
+            note.setParentId(request.parentId() == -1L ? null : request.parentId());
         }
         if (request.title() != null) {
             note.setTitle(request.title());
@@ -90,8 +92,9 @@ public class NotesService implements NotesUseCase {
         Notes note = notesRepository.findByIdAndUserId(request.id(), userId)
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with id: " + request.id()));
 
-        subtreeOf(userId, note.getId())
-                .forEach(id -> notesRepository.deleteByIdAndUserId(id, userId));
+        List<Long> subtree = new ArrayList<>(subtreeOf(userId, note.getId()));
+        Collections.reverse(subtree);
+        subtree.forEach(id -> notesRepository.deleteByIdAndUserId(id, userId));
     }
 
     private Set<Long> subtreeOf(Long userId, Long rootId) {
