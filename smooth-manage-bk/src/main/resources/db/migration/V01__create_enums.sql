@@ -10,7 +10,7 @@ BEGIN
 
     --Tasks status info
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tasks_status') THEN
-    CREATE TYPE tasks_status AS ENUM ('TODO', 'IN_PROGRESS', 'DONE');
+    CREATE TYPE tasks_status AS ENUM ('TODO', 'IN_PROGRESS', 'BLOCKED', 'DONE');
     END IF;
 
     --Tasks node type to change his behavior

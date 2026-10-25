@@ -1,44 +1,64 @@
-# ==================== RENDER.YAML PARA SMOOTH-MANAGE ====================
-# Este archivo configura el despliegue en Render.com
-# Coloca este archivo en el raíz de tu repositorio
+# ==================== RENDER BLUEPRINT: SMOOTH-MANAGE ====================
+# Un único Web Service Docker que contiene frontend (nginx) + backend (Spring Boot).
+# La base de datos vive en Supabase, NO en Render.
+#
+# Uso:
+#   1. Sube este archivo a la rama main.
+#   2. En Render: New -> Blueprint -> selecciona el repositorio.
+#   3. Render pedirá los valores marcados con `sync: false` (secretos).
+#   4. Cuando termine el deploy, la app queda en https://<nombre>.onrender.com
+#
+# Documentación detallada: DEPLOY_RENDER.md
 
 services:
-- type: web
-  name: smoothmanage-frontend
-  env: docker
-  plan: free
-  dockerfile: smooth-manage-fnt/Dockerfile
-  startCommand: npm run preview
-  envVars:
-    - key: VITE_API_BASE_URL
-      fromService:
-        type: web
-        name: smoothmanage-backend
-        property: publicUrl
-    - key: NODE_ENV
-      value: production
-  
-- type: web
-  name: smoothmanage-backend
-  env: docker
-  plan: free
-  dockerfile: smooth-manage-bk/Dockerfile
-  startCommand: java -jar app.jar
-  envVars:
-    - key: SPRING_PROFILES_ACTIVE
-      value: production
-    - key: SPRING_DATASOURCE_URL
-      fromDatabase:
-        type: postgresql
-        name: smoothmanage-db
-        property: connectionString
-    - key: JWT_SECRET
-      generateValue: true
-    - key: JWT_EXPIRATION
-      value: "3600000"
+  - type: web
+    name: smoothmanage
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      # ---------- Spring Boot ----------
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
 
-databases:
-- name: smoothmanage-db
-  databaseName: smoothmanage
-  user: smoothmanage
-  region: oregon
+      # ---------- Supabase (Session Pooler, puerto 5432) ----------
+      # Formato del URL (¡con prefijo jdbc:!):
+      #   jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      # Usuario del pooler, p. ej. postgres.<project-ref>
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+      # ---------- JWT ----------
+      # Render genera y conserva un valor aleatorio; no lo cambies tras el primer deploy
+      # o se invalidarán los tokens/sesiones existentes.
+      - key: JWT_SIGNING_KEY
+        generateValue: true
+
+      # ---------- Correo (Gmail SMTP) ----------
+      # ⚠️ El plan free de Render bloquea los puertos SMTP 25, 465 y 587.
+      # Para enviar correos en producción necesitas:
+      #   a) un plan pago de Render, o
+      #   b) un proveedor SMTP que use el puerto 2525 (Brevo, Mailjet, etc.),
+      #      cambiando SPRING_MAIL_HOST, SPRING_MAIL_PORT y las credenciales.
+      - key: SPRING_MAIL_HOST
+        value: smtp.gmail.com
+      - key: SPRING_MAIL_PORT
+        value: "465"
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: APP_EMAIL_FROM
+        value: kevin.dev.dod@gmail.com
+
+      # ---------- JVM (plan free: 512 MB) ----------
+      - key: JAVA_OPTS
+        value: "-XX:MaxRAMPercentage=70 -XX:+UseSerialGC -Dfile.encoding=UTF-8"

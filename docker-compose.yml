@@ -16,6 +16,17 @@ services:
       # Se activa el perfil 'local' para que Spring cargue
       # src/main/resources/application-local.properties (JWT, mail, BD, etc.).
       SPRING_PROFILES_ACTIVE: local
+    volumes:
+      # El archivo está gitignoreado y excluido de la imagen por .dockerignore.
+      # Se monta en /app/config para que Spring Boot lo cargue como configuración
+      # externa (file:./config/application-local.properties).
+      - ./smooth-manage-bk/application-local.properties:/app/config/application-local.properties:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
 
   # === FRONTEND (Vite + React + nginx) ===
   frontend:
@@ -29,7 +40,5 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - backend
-
-volumes:
-  postgres_data:
+      backend:
+        condition: service_healthy

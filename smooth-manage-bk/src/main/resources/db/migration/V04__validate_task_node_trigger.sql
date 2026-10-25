@@ -12,11 +12,11 @@ BEGIN
           AND deleted_at IS NULL;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'parent folder % not found or not owned by user', NEW.parent_id;
+            RAISE EXCEPTION 'parent list % not found or not owned by user', NEW.parent_id;
         END IF;
 
-        IF parent_type <> 'FOLDER' THEN
-            RAISE EXCEPTION 'parent node % is not a folder', NEW.parent_id;
+        IF parent_type <> 'LIST' THEN
+            RAISE EXCEPTION 'parent node % is not a list', NEW.parent_id;
         END IF;
     END IF;
 

@@ -83,8 +83,11 @@ El nombre "SmoothManage" refleja el objetivo principal: proporcionar una experie
 git clone https://github.com/KevinMorenoDOD/PRY-SmoothManage.git
 cd PRY-SmoothManage
 
-# 2. Construir e iniciar todos los servicios
-docker-compose up --build
+# 2. Crear smooth-manage-bk/application-local.properties con tus credenciales
+#    (está gitignoreado y docker-compose lo monta en /app/config/)
+
+# 3. Construir e iniciar todos los servicios
+docker compose up --build
 ```
 
 ### Primera Ejecución
@@ -95,22 +98,34 @@ docker-compose up --build
 ### Configuración de Entorno
 El proyecto utiliza un archivo `application-local.properties` para configuración local (credenciales de BD, email, JWT). Este archivo está en `.gitignore` y nunca se sube al repositorio público.
 
+### Despliegue en Render (producción)
+
+El despliegue usa **una sola imagen Docker** con nginx (frontend) + Spring Boot (backend), y Supabase como base de datos. Un único Web Service en Render, mismo origen y sin CORS entre dominios.
+
+Consulta la guía completa en **[DEPLOY_RENDER.md](DEPLOY_RENDER.md)**. Incluye:
+
+- Variables de entorno y secretos (`render.yaml`).
+- Cadena de conexión del Session Pooler de Supabase.
+- Health check `/healthz`, solución de problemas y CORS.
+- Cómo probar la imagen localmente igual que en producción.
+
 ## 📁 Estructura del Proyecto
 
 ```
 PRY-SmoothManage/
+├── Dockerfile                 # Imagen única de producción (nginx + Spring Boot)
+├── docker/                    # Entrypoint y plantilla nginx de producción
+├── render.yaml                # Blueprint de Render (un solo Web Service)
+├── DEPLOY_RENDER.md           # Guía paso a paso de despliegue
 ├── smooth-manage-bk/          # Backend Java (Spring Boot)
-│   ├── src/main/java/        # Código fuente
-│   ├── src/main/resources/   # Configuración
-│   └── pom.xml               # Dependencias Maven
+│   ├── src/main/java/         # Código fuente
+│   ├── src/main/resources/    # Configuración (application-production.properties)
+│   └── pom.xml                # Dependencias Maven
 ├── smooth-manage-fnt/         # Frontend (Vite + React + TypeScript)
-│   ├── src/                  # Componentes y lógica
-│   ├── dist/                 # Build de producción
-│   └── package.json          # Dependencias Node
-├── smooth-manage-db/          # Configuración Docker
-│   ├── docker-compose.yml
-│   └── Dockerfile (planes)
-└── README.md                 # Esta documentación
+│   ├── src/                   # Componentes y lógica
+│   └── package.json           # Dependencias Node
+├── smooth-manage-db/          # Configuración Docker de BD local
+└── README.md                  # Esta documentación
 ```
 
 ## 🎯 Estado Actual del Proyecto

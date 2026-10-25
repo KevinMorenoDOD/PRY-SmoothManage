@@ -44,3 +44,6 @@ application-local.properties
 src/main/resources/application-*.properties
 src/main/resources/application-*.yml
 src/main/resources/application-*.yaml
+
+# El perfil de producción no contiene secretos (todo viene de variables de entorno)
+!src/main/resources/application-production.properties

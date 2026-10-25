@@ -1,1 +1,6 @@
 smooth-manage-db/docker-compose.yml
+
+# Secretos locales de despliegue
+.env
+.env.*
+!.env.example

@@ -1,0 +1,31 @@
+# Control de versiones / IDE
+.git
+.gitignore
+.idea
+.vscode
+*.iml
+
+# Dependencias y artefactos de build
+**/node_modules
+**/dist
+**/target
+**/.mvn
+smooth-manage-bk/mvnw
+smooth-manage-bk/mvnw.cmd
+
+# Secretos y configuración local
+**/application-local.properties
+**/application-*.local.properties
+**/.env
+**/.env.*
+**/*.local
+**/*.pem
+**/*.key
+
+# Documentación / módulos que no se usan en la imagen
+smooth-manage-db
+smooth-manage-docs
+README.md
+DEPLOY_RENDER.md
+render.yaml
+docker-compose*.yml
