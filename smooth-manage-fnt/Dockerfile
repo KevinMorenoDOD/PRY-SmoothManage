@@ -4,24 +4,31 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# ⭐ PASO CLAVE: Copiar archivos de configuración primero (package.json, vite.config.ts)
-COPY package.json package-lock.json vite.config.ts tsconfig*.json ./
+# URL base de la API inyectada en tiempo de BUILD.
+# Por defecto es relativa (/api/v1) y nginx la reenvía al backend.
+# Para producción (Render) puedes sobrescribirla con el ARG.
+ARG VITE_API_BASE_URL=/api/v1
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
-# Instalar dependencias de forma consistente (npm ci)
+# Copiar archivos de dependencias primero para aprovechar el caché de Docker
+COPY package.json package-lock.json ./
+
+# Instalar dependencias de forma consistente
 RUN npm ci
 
-# Copiar todo el código fuente fuente
-COPY vite-env.d.ts tsconfig.app.json tsconfig.node.json src/ public/ ./
+# Copiar el resto del código fuente (node_modules y dist van en .dockerignore)
+COPY . .
 
-# ⚡ Compilar para producción (modo optimizado)
+# Compilar para producción (tsc + vite build)
 RUN npm run build
 
-# Etapa 2: Servir con nginx (servidor web estándar en producción)
+# Etapa 2: Servir con nginx
 FROM nginx:alpine
 
+# Configuración de nginx: SPA + proxy /api -> backend
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copiar los archivos compilados a la carpeta por defecto de nginx
-# Vite genera archivos en dist/ con nombres hasheados (ideal para caching)
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Exponer el puerto 80 (HTTP) - Render lo mapeará automáticamente a HTTPS
 EXPOSE 80

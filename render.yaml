@@ -1,0 +1,44 @@
+# ==================== RENDER.YAML PARA SMOOTH-MANAGE ====================
+# Este archivo configura el despliegue en Render.com
+# Coloca este archivo en el raíz de tu repositorio
+
+services:
+- type: web
+  name: smoothmanage-frontend
+  env: docker
+  plan: free
+  dockerfile: smooth-manage-fnt/Dockerfile
+  startCommand: npm run preview
+  envVars:
+    - key: VITE_API_BASE_URL
+      fromService:
+        type: web
+        name: smoothmanage-backend
+        property: publicUrl
+    - key: NODE_ENV
+      value: production
+  
+- type: web
+  name: smoothmanage-backend
+  env: docker
+  plan: free
+  dockerfile: smooth-manage-bk/Dockerfile
+  startCommand: java -jar app.jar
+  envVars:
+    - key: SPRING_PROFILES_ACTIVE
+      value: production
+    - key: SPRING_DATASOURCE_URL
+      fromDatabase:
+        type: postgresql
+        name: smoothmanage-db
+        property: connectionString
+    - key: JWT_SECRET
+      generateValue: true
+    - key: JWT_EXPIRATION
+      value: "3600000"
+
+databases:
+- name: smoothmanage-db
+  databaseName: smoothmanage
+  user: smoothmanage
+  region: oregon

@@ -19,12 +19,11 @@ RUN mvn -B package -DskipTests
 # Etapa 2: Ejecución con JRE ligero
 FROM eclipse-temurin:21-jre-alpine
 
-# Crear usuario no root (mejor práctica de seguridad)
-RUN groupadd -r smoothmanage && useradd -r -g smoothmanage smoothmanage
+# Crear usuario no root (comandos de Alpine: addgroup/adduser)
+RUN addgroup -S smoothmanage && adduser -S -G smoothmanage smoothmanage
 
-# Copiar el JAR generado desde la etapa build
-ARG JAR_FILE=target/smooth-manage-*.jar
-COPY --from=build ${JAR_FILE} app.jar
+# Copiar el JAR generado desde la etapa build (glob directo, sin ARG)
+COPY --from=build /app/target/smooth-manage-*.jar app.jar
 
 # Exponer el puerto de Spring Boot
 EXPOSE 8080
