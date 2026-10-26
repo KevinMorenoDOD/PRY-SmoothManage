@@ -107,21 +107,25 @@ Copia los datos y sepáralos en tres variables. **Importante:** Spring Boot nece
 1. Sube los cambios a `main` (incluye `Dockerfile`, `render.yaml` y `docker/`).
 2. En Render: **New → Blueprint**.
 3. Conecta el repositorio `PRY-SmoothManage`.
-4. Render detecta `render.yaml` y muestra el servicio `smoothmanage`.
+4. Render detecta `render.yaml` y muestra el servicio `pry-smoothmanage`.
 5. Rellena las variables `sync: false` del paso anterior.
 6. Pulsa **Apply** / **Deploy**.
 
-> ℹ️ Si ya tenías los servicios antiguos `smoothmanage-frontend` y `smoothmanage-backend` en Render, este Blueprint crea uno nuevo llamado `smoothmanage`. Elimina los anteriores cuando confirmes que el nuevo funciona, para no consumir recursos del plan free.
+> ℹ️ Si ya tienes el servicio `pry-smoothmanage` creado manualmente, al sincronizar el Blueprint Render aplicará esta configuración sobre ese mismo servicio (mismo nombre), sin crear un duplicado.
+>
+> ℹ️ Si aún tienes los servicios antiguos `smoothmanage-frontend` y `smoothmanage-backend`, elimínalos cuando confirmes que `pry-smoothmanage` funciona, para no consumir recursos del plan free.
 >
 > ℹ️ La base de datos `smoothmanage-db` que aparecía en el `render.yaml` anterior ya no se usa. Si aún existe en Render, puedes eliminarla: la BD real está en Supabase.
 
 Render construirá la imagen con el `Dockerfile` de la raíz y publicará:
 
 ```
-https://smoothmanage.onrender.com
+https://pry-smoothmanage.onrender.com
 ```
 
 El health check usa `GET /healthz`, que nginx reenvía a `/actuator/health` de Spring Boot. Solo responde `200` cuando el backend y la conexión a Supabase están listos.
+
+> ⏳ **Primer arranque / cold start:** en el plan free el backend tarda ~30-60 s en arrancar (Flyway, Hibernate, Supabase). La imagen mantiene nginx apagado hasta que Spring Boot responde, así que Render no enruta tráfico antes de tiempo y no verás `502` al hacer login durante el arranque. Si el servicio estuvo inactivo, Render muestra su pantalla de carga hasta que el health check pasa.
 
 ---
 
@@ -129,13 +133,13 @@ El health check usa `GET /healthz`, que nginx reenvía a `/actuator/health` de S
 
 ```bash
 # Frontend
-curl -I https://smoothmanage.onrender.com
+curl -I https://pry-smoothmanage.onrender.com
 
 # Health check (debe devolver {"status":"UP"})
-curl https://smoothmanage.onrender.com/healthz
+curl https://pry-smoothmanage.onrender.com/healthz
 
 # API (ejemplo: login)
-curl -X POST https://smoothmanage.onrender.com/api/v1/auth/login \
+curl -X POST https://pry-smoothmanage.onrender.com/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"...","password":"..."}'
 ```
@@ -220,7 +224,8 @@ Si no tienes `application-local.properties`, créalo a partir de los valores de 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
 | `no open ports detected` | La app no escucha en `$PORT`. | La imagen usa nginx con `${PORT}` (10000 por defecto). Revisa que `PORT` no esté sobrescrita con 8080. |
-| `502 Bad Gateway` | Spring Boot aún no arrancó o falló. | Revisa los logs; normalmente es una variable de BD mal escrita. |
+| `502 Bad Gateway` en los primeros segundos | Spring Boot aún está arrancando (Flyway + JPA). | La imagen espera a `/actuator/health` antes de arrancar nginx; si persiste, revisa los logs del backend y que `healthCheckPath` sea `/healthz`. |
+| `502 Bad Gateway` permanente | Spring Boot falló o no arrancó. | Revisa los logs; normalmente es una variable de BD mal escrita. |
 | `Flyway validate failed` | Se modificó una migración ya aplicada en Supabase. | No edites migraciones aplicadas: crea una nueva `V06__...sql`. |
 | `Connection refused` a Supabase | Estás usando el puerto/direct connection equivocado. | Usa el Session pooler en `5432` y `sslmode=require`. |
 | `password authentication failed` | Usuario o contraseña incorrectos. | Usa `postgres.<project-ref>` y la contraseña de la BD (no la de tu cuenta Supabase). |

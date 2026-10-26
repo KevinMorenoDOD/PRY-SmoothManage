@@ -12,7 +12,7 @@
 
 services:
   - type: web
-    name: smoothmanage
+    name: pry-smoothmanage
     runtime: docker
     plan: free
     region: oregon
