@@ -22,7 +22,7 @@ El nombre "SmoothManage" refleja el objetivo principal: proporcionar una experie
 - **PostgreSQL** - Base de datos relacional (migraciones con Flyway)
 - **Spring Security** - Autenticación y autorización
 - **JWT** - Token-based authentication
-- **Mail SMTP** - Envío de emails (notificaciones)
+- **Brevo SMTP** - Envío de emails transaccionales (notificaciones)
 
 ### **DevOps y Despliegue**
 - **Docker** - Contenerización de ambos servicios

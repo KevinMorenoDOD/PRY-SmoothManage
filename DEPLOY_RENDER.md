@@ -29,7 +29,7 @@ Ventajas:
 - Repositorio en GitHub con la rama `main` actualizada.
 - Proyecto en [Supabase](https://supabase.com) con el schema y las migraciones aplicadas.
 - Cuenta en [Render](https://render.com).
-- (Opcional) Cuenta de Gmail con contraseña de aplicación para el SMTP.
+- Cuenta en [Brevo](https://www.brevo.com) para el envío de correos transaccionales (SMTP).
 
 ---
 
@@ -59,6 +59,26 @@ Copia los datos y sepáralos en tres variables. **Importante:** Spring Boot nece
 
 `render.yaml` ya declara todo. Las marcadas con `sync: false` te las pedirá Render al crear el Blueprint:
 
+### Configurar Brevo SMTP
+
+1. Crea una cuenta en [Brevo](https://www.brevo.com) y **verifica el remitente** que usarás en `APP_EMAIL_FROM` (o autentica tu dominio con DKIM).
+2. En Brevo ve a **Settings → SMTP & API → SMTP**. Copia:
+   - **SMTP server**: `smtp-relay.brevo.com`
+   - **Port**: `2525` (Render free bloquea 25, 465 y 587)
+   - **SMTP login**: tu email de Brevo o un `ID@smtp-brevo.com`
+   - **SMTP key**: créala en esa misma página. **No es la API key** ni la contraseña de tu cuenta.
+3. En Render define las variables:
+
+| Variable | Valor |
+|---|---|
+| `SPRING_MAIL_HOST` | `smtp-relay.brevo.com` (ya definida) |
+| `SPRING_MAIL_PORT` | `2525` (ya definida) |
+| `SPRING_MAIL_USERNAME` | SMTP login de Brevo |
+| `SPRING_MAIL_PASSWORD` | SMTP key de Brevo |
+| `APP_EMAIL_FROM` | Remitente verificado en Brevo |
+
+> El plan free de Brevo permite **300 correos/día**. Para producción real, autentica tu dominio y usa un remitente del dominio verificado.
+
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `SPRING_PROFILES_ACTIVE` | Sí | `production` (ya definida en `render.yaml`). |
@@ -66,20 +86,17 @@ Copia los datos y sepáralos en tres variables. **Importante:** Spring Boot nece
 | `SPRING_DATASOURCE_USERNAME` | Sí | Usuario del pooler (`postgres.<project-ref>`). |
 | `SPRING_DATASOURCE_PASSWORD` | Sí | Contraseña de Supabase. |
 | `JWT_SIGNING_KEY` | Sí | Render la genera automáticamente (`generateValue: true`). No la cambies después del primer deploy. |
-| `SPRING_MAIL_USERNAME` | Sí (correo) | Cuenta de Gmail que envía los correos. |
-| `SPRING_MAIL_PASSWORD` | Sí (correo) | Contraseña de aplicación de Gmail (16 caracteres), **no** la contraseña normal. |
-| `APP_EMAIL_FROM` | No | Remitente visible. Por defecto `kevin.dev.dod@gmail.com`. |
+| `SPRING_MAIL_USERNAME` | Sí (correo) | SMTP login de Brevo. |
+| `SPRING_MAIL_PASSWORD` | Sí (correo) | SMTP key de Brevo (no la API key). |
+| `APP_EMAIL_FROM` | Sí (correo) | Remitente verificado en Brevo. |
 | `APP_FRONTEND_URL` | No | Se toma de `RENDER_EXTERNAL_URL` automáticamente. |
 | `APP_CORS_ALLOWED_ORIGINS` | No | Solo si llamas la API desde otro dominio. Por defecto `http://localhost:3000,http://localhost:5173`. |
 | `DEEPSEEK_API_KEY` | No | Solo si usas la integración de IA. |
 | `JAVA_OPTS` | No | Ajustes de memoria para el plan free. Ya definido en `render.yaml`. |
 
-> ⚠️ **Correo en el plan free:** Render bloquea el tráfico saliente a los puertos SMTP **25, 465 y 587** en servicios free. Gmail SMTP (465/587) **no funcionará** en el plan free. Opciones:
-> - Usar un plan pago de Render (permite 465/587).
-> - Usar un proveedor SMTP en el puerto **2525** (Brevo, Mailjet, etc.) y cambiar `SPRING_MAIL_HOST`, `SPRING_MAIL_PORT`, `SPRING_MAIL_USERNAME` y `SPRING_MAIL_PASSWORD`.
-> - Integrar una API de correo por HTTPS (Resend, SendGrid, etc.), que requiere adaptar `SmtpEmailService`.
+> ✅ **Brevo ya está configurado en el puerto 2525**, precisamente porque Render free bloquea los puertos SMTP **25, 465 y 587**. No cambies a 465/587 en el plan free.
 >
-> El health check no depende del correo (`management.health.mail.enabled=false`), así que la app arranca aunque el SMTP falle. |
+> El health check no depende del correo (`management.health.mail.enabled=false`), así que la app arranca aunque el SMTP falle.
 
 > En el plan **free** de Render (512 MB) se configura `-XX:MaxRAMPercentage=70` para que la JVM no se coma toda la memoria del contenedor.
 
@@ -194,7 +211,7 @@ docker compose up --build
 - El backend monta `smooth-manage-bk/application-local.properties` en `/app/config/`.
 - El frontend usa el proxy de nginx (`/api/` → `backend:8080`), así que tampoco hay CORS.
 
-Si no tienes `application-local.properties`, créalo a partir de los valores de Supabase, Gmail y JWT (está en `.gitignore` y nunca se sube).
+Si no tienes `application-local.properties`, créalo a partir de los valores de Supabase, Brevo y JWT (está en `.gitignore` y nunca se sube). Para usar Brevo también en local: `spring.mail.host=smtp-relay.brevo.com`, `spring.mail.port=2525`, `spring.mail.username=<SMTP login>`, `spring.mail.password=<SMTP key>`.
 
 ---
 
@@ -210,10 +227,11 @@ Si no tienes `application-local.properties`, créalo a partir de los valores de 
 | El servicio tarda en responder | Plan free: Render duerme el servicio tras inactividad. | Es normal; la primera petición tarda ~30-60 s. |
 | `OutOfMemoryError` | JVM con poca memoria en el plan free. | Mantén `JAVA_OPTS=-XX:MaxRAMPercentage=70 -XX:+UseSerialGC`. |
 | CORS bloqueado | `APP_CORS_ALLOWED_ORIGINS` no incluye el dominio. | Añade el dominio exacto (con `https://`, sin barra final). |
-| No llegan correos en Render free | Render bloquea los puertos SMTP 25/465/587 en free. | Usa un plan pago o un SMTP en puerto 2525 (Brevo, Mailjet) / API HTTPS. |
+| No llegan correos / `535 Authentication failed` | Credenciales SMTP incorrectas o remitente no verificado. | Usa el **SMTP login** y la **SMTP key** de Brevo (no la API key) y verifica `APP_EMAIL_FROM` en Brevo. |
+| `Timeout` al enviar correo en Render free | Puerto SMTP bloqueado por Render. | Usa el puerto **2525** de Brevo (ya configurado). No uses 465/587 en free. |
 
 ---
 
 ## 10. Actualizaciones
 
-Con `autoDeploy: true`, cada push a `main` reconstruye y despliega la imagen automáticamente. Si cambias variables de entorno, Render reinicia el servicio.
+Con `autoDeployTrigger: commit`, cada push a `main` reconstruye y despliega la imagen automáticamente. Si cambias variables de entorno, Render reinicia el servicio.

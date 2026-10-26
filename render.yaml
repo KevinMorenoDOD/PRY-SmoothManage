@@ -43,22 +43,22 @@ services:
       - key: JWT_SIGNING_KEY
         generateValue: true
 
-      # ---------- Correo (Gmail SMTP) ----------
-      # ⚠️ El plan free de Render bloquea los puertos SMTP 25, 465 y 587.
-      # Para enviar correos en producción necesitas:
-      #   a) un plan pago de Render, o
-      #   b) un proveedor SMTP que use el puerto 2525 (Brevo, Mailjet, etc.),
-      #      cambiando SPRING_MAIL_HOST, SPRING_MAIL_PORT y las credenciales.
+      # ---------- Correo (Brevo SMTP) ----------
+      # Brevo en el puerto 2525: Render free bloquea 25/465/587, pero 2525 sí funciona.
+      # Credenciales en Brevo -> Settings -> SMTP & API -> SMTP:
+      #   SPRING_MAIL_USERNAME = SMTP login (tu email o ID@smtp-brevo.com)
+      #   SPRING_MAIL_PASSWORD = SMTP key (NO es la API key)
+      # El remitente (APP_EMAIL_FROM) debe estar verificado en Brevo.
       - key: SPRING_MAIL_HOST
-        value: smtp.gmail.com
+        value: smtp-relay.brevo.com
       - key: SPRING_MAIL_PORT
-        value: "465"
+        value: "2525"
       - key: SPRING_MAIL_USERNAME
         sync: false
       - key: SPRING_MAIL_PASSWORD
         sync: false
       - key: APP_EMAIL_FROM
-        value: kevin.dev.dod@gmail.com
+        sync: false
 
       # ---------- JVM (plan free: 512 MB) ----------
       - key: JAVA_OPTS
