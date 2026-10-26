@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +32,15 @@ public class SecurityConfig {
 
     @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
+
+    /**
+     * URL pública de la aplicación (en Render = RENDER_EXTERNAL_URL). Se añade
+     * siempre a los orígenes permitidos: el navegador envía cabecera Origin en
+     * los POST aunque frontend y API compartan dominio, y si esa URL no está
+     * permitida Spring responde 403 "Invalid CORS request" en login/register.
+     */
+    @Value("${app.frontend.url:}")
+    private String frontendUrl;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -78,10 +89,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+        List<String> origins = new ArrayList<>(Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isEmpty())
-                .toList();
+                .toList());
+
+        // La propia URL pública siempre debe estar permitida (mismo origen real).
+        String publicOrigin = toOrigin(frontendUrl);
+        if (publicOrigin != null && !origins.contains(publicOrigin)) {
+            origins.add(publicOrigin);
+        }
 
         if (origins.contains("*")) {
             // Los patrones permiten "*" junto con credenciales (Spring no acepta
@@ -100,6 +117,24 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    /** "https://host/path" -> "https://host" (con puerto si no es el estándar). */
+    private String toOrigin(String url) {
+        if (url == null || url.isBlank()) {
+            return null;
+        }
+        try {
+            URI uri = URI.create(url.trim());
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                return null;
+            }
+            return uri.getPort() == -1
+                    ? uri.getScheme() + "://" + uri.getHost()
+                    : uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort();
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
 }

@@ -90,7 +90,7 @@ Copia los datos y sepáralos en tres variables. **Importante:** Spring Boot nece
 | `SPRING_MAIL_PASSWORD` | Sí (correo) | SMTP key de Brevo (no la API key). |
 | `APP_EMAIL_FROM` | Sí (correo) | Remitente verificado en Brevo. |
 | `APP_FRONTEND_URL` | No | Se toma de `RENDER_EXTERNAL_URL` automáticamente. |
-| `APP_CORS_ALLOWED_ORIGINS` | No | Solo si llamas la API desde otro dominio. Por defecto `http://localhost:3000,http://localhost:5173`. |
+| `APP_CORS_ALLOWED_ORIGINS` | No | Solo si llamas la API desde otro dominio o usas un dominio propio. La URL pública (`RENDER_EXTERNAL_URL`) se añade siempre automáticamente. |
 | `DEEPSEEK_API_KEY` | No | Solo si usas la integración de IA. |
 | `JAVA_OPTS` | No | Ajustes de memoria para el plan free. Ya definido en `render.yaml`. |
 
@@ -163,6 +163,8 @@ Aun así, el backend quedó con CORS correctamente configurado para desarrollo y
 
 - Se activa en la cadena de seguridad con `.cors(Customizer.withDefaults())`.
 - Los orígenes se leen de `APP_CORS_ALLOWED_ORIGINS` (lista separada por comas).
+- La URL pública de la app (`app.frontend.url`, en Render `RENDER_EXTERNAL_URL`) se añade **siempre** a los orígenes permitidos.
+- nginx reenvía el `X-Forwarded-Proto` original de Render, para que Spring no confunda `https://` con `http://` y rechace los POST.
 - Se eliminó la combinación inválida `allowedOrigin("*")` + `allowCredentials(true)`.
 - Si algún día necesitas llamar la API desde otro dominio, añade:
 
@@ -231,6 +233,7 @@ Si no tienes `application-local.properties`, créalo a partir de los valores de 
 | `password authentication failed` | Usuario o contraseña incorrectos. | Usa `postgres.<project-ref>` y la contraseña de la BD (no la de tu cuenta Supabase). |
 | El servicio tarda en responder | Plan free: Render duerme el servicio tras inactividad. | Es normal; la primera petición tarda ~30-60 s. |
 | `OutOfMemoryError` | JVM con poca memoria en el plan free. | Mantén `JAVA_OPTS=-XX:MaxRAMPercentage=70 -XX:+UseSerialGC`. |
+| `403 Forbidden` + `Invalid CORS request` al hacer login/register | El `Origin` del navegador no está permitido (o el esquema no coincide, p. ej. `https` vs `http` por el proxy). | Ya corregido: nginx reenvía `X-Forwarded-Proto: https` y la URL de Render se añade a CORS. Si defines `APP_CORS_ALLOWED_ORIGINS`, incluye `https://pry-smoothmanage.onrender.com`. |
 | CORS bloqueado | `APP_CORS_ALLOWED_ORIGINS` no incluye el dominio. | Añade el dominio exacto (con `https://`, sin barra final). |
 | No llegan correos / `535 Authentication failed` | Credenciales SMTP incorrectas o remitente no verificado. | Usa el **SMTP login** y la **SMTP key** de Brevo (no la API key) y verifica `APP_EMAIL_FROM` en Brevo. |
 | `Timeout` al enviar correo en Render free | Puerto SMTP bloqueado por Render. | Usa el puerto **2525** de Brevo (ya configurado). No uses 465/587 en free. |

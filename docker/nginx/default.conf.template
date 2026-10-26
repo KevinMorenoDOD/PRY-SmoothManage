@@ -1,5 +1,15 @@
 # ==================== NGINX: FRONTEND + PROXY AL BACKEND ====================
 # ${PORT} lo sustituye el entrypoint oficial de nginx (envsubst).
+
+# Render termina el TLS y manda X-Forwarded-Proto: https. Si no llega (p. ej.
+# en local), se usa el esquema real de nginx. Reenviar $scheme a secas hacía que
+# Spring viera "http://host" y rechazara con 403 los POST del navegador
+# (Origin "https://host" != esquema de la petición -> "Invalid CORS request").
+map $http_x_forwarded_proto $forwarded_proto {
+    default $http_x_forwarded_proto;
+    ""      $scheme;
+}
+
 server {
     listen ${PORT};
     server_name _;
@@ -25,6 +35,7 @@ server {
         access_log off;
         proxy_pass http://127.0.0.1:8080/actuator/health;
         proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_connect_timeout 5s;
         proxy_read_timeout 10s;
     }
@@ -43,7 +54,8 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_connect_timeout 10s;
         proxy_read_timeout 120s;
         proxy_send_timeout 120s;
